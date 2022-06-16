@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace CarRentalSystem.DataAccess.Concrete.EntityFramework
 {
-    public class EfOperationClaimDal:EfEntityRepositoryBase<OperationClaim>, IOperationClaimDal
+    public class EfRoleDal:EfEntityRepositoryBase<Role>, IRoleDal
     {
 
 

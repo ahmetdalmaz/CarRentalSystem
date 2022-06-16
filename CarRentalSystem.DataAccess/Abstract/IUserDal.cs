@@ -10,6 +10,6 @@ namespace CarRentalSystem.DataAccess.Abstract
 {
     public interface IUserDal:IEntityRepository<User>
     {
-        void SendMail(string email, string password);
+        List<UserInfoDto> GetUsers();
     }
 }

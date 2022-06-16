@@ -25,15 +25,14 @@ namespace CarRentalSystem.UI
         private void button1_Click(object sender, EventArgs e)
         {
             UserManager userManager = new UserManager(new EfUserDal());
-            UserOperationClaimManager userOperationClaimManager = new UserOperationClaimManager(new EfUserOperationClaim());
+           
 
-           var response= userManager.Register(new Entities.Dtos.RegisterDto { Email = txtMail.Text, SecurityQuestion = cmbSecurityQuestion.Text, Password = txtPassword.Text, SecurityQuestionAnswer = txtAnswerQuestion.Text, Name = txtName.Text, Surname = txtSurname.Text, IdentityNumber = txtTc.Text, Address = txtAddress.Text, PhoneNumber = maskedtxtPhone.Text, PasswordConfirmation = txtRePassword.Text });
+           var response= userManager.Register(new Entities.Dtos.RegisterDto { Email = txtMail.Text, SecurityQuestion = cmbSecurityQuestion.Text, Password = txtPassword.Text, SecurityQuestionAnswer = txtAnswerQuestion.Text, Name = txtName.Text, Surname = txtSurname.Text, IdentityNumber = txtTc.Text, Address = txtAddress.Text, PhoneNumber = maskedtxtPhone.Text, PasswordConfirmation = txtRePassword.Text, RoleId = 1 });
             if (response.IsSuccesful) 
             {
            
                 AlertUtil.Show("Başarıyla Kayıt Oldunuz", FormAlert.MessageType.Success);
-                User user = userManager.GetByMail(txtMail.Text);
-                userOperationClaimManager.Add(new UserOperationClaim { OperationClaimId = 1, UserId = user.UserId });
+               
                 Hide();
                 formLogin.Show();
             }

@@ -41,8 +41,12 @@ namespace CarRentalSystem.Business.DependencyResolver
             builder.RegisterType<RentalManager>().As<IRentalService>().SingleInstance();
             builder.RegisterType<EfRentalDal>().As<IRentalDal>().SingleInstance();
 
-            
-            
+            builder.RegisterType<RoleClaimManager>().As<IRoleClaimService>().SingleInstance();
+            builder.RegisterType<EfRoleClaim>().As<IRoleClaimDal>().SingleInstance();
+
+            builder.RegisterType<RoleManager>().As<IRoleService>().SingleInstance();
+            builder.RegisterType<EfRoleDal>().As<IRoleDal>().SingleInstance();
+
             var assembly = System.Reflection.Assembly.GetExecutingAssembly();
 
             builder.RegisterAssemblyTypes(assembly).AsImplementedInterfaces()

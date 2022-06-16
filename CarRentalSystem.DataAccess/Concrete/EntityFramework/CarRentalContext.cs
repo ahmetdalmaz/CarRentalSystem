@@ -19,8 +19,8 @@ namespace CarRentalSystem.DataAccess.Concrete.EntityFramework
         }
 
         public DbSet<User>? Users { get; set; }
-        public DbSet<OperationClaim>? OperationClaims { get; set; }
-        public DbSet<UserOperationClaim>? UserOperationClaims { get; set; }
+        public DbSet<Role>? Roles { get; set; }
+        public DbSet<RoleClaim>? RoleClaims { get; set; }
         public DbSet<Brand>? Brands { get; set; }
         public DbSet<Model>? Models { get; set; }
         public DbSet<Segment>? Segments { get; set; }
@@ -30,8 +30,8 @@ namespace CarRentalSystem.DataAccess.Concrete.EntityFramework
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.ApplyConfiguration(new UserMap());
-            modelBuilder.ApplyConfiguration(new OperationClaimMap());
-            modelBuilder.ApplyConfiguration(new UserOperationClaimMap());
+            modelBuilder.ApplyConfiguration(new RoleMap());
+            modelBuilder.ApplyConfiguration(new RoleClaimMap());
             modelBuilder.ApplyConfiguration(new ModelMap());
             modelBuilder.ApplyConfiguration(new SegmentMap());
             modelBuilder.ApplyConfiguration(new BrandMap());

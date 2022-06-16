@@ -1,5 +1,7 @@
 ﻿
+using CarRentalSystem.Business.Abstract;
 using CarRentalSystem.Business.Concrete;
+using CarRentalSystem.Business.DependencyResolver;
 using CarRentalSystem.Business.Utilities;
 using CarRentalSystem.DataAccess.Concrete.EntityFramework;
 using CarRentalSystem.Entities.Concrete;
@@ -21,21 +23,26 @@ namespace CarRentalSystem.UI
         public FormMain()
         {
             InitializeComponent();
+            _roleClaimManager = InstanceFactory.GetInstance<IRoleClaimService>();
         }
-
+        IRoleClaimService _roleClaimManager;
         UserManager userManager = new UserManager(new EfUserDal());
         RentalManager rentalManager = new RentalManager(new EfRentalDal());
         CarManager carManager = new CarManager(new EfCarDal());
-      
-        
+
+        User user;
         private void FormMain_Load(object sender, EventArgs e)
         {
-            User user = LoginCache.User;
+            user = LoginCache.User;
             labelName.Text = user.Name.ToUpper() + " " + user.Surname.ToUpper();
-            LoadData();
+            LoginCache.RoleClaims =  _roleClaimManager.GetRoleClaimsByRoleId(user.RoleId).Data;
 
-            
+   
+
+
+            LoadData();
         }
+
 
         
 
@@ -153,64 +160,138 @@ namespace CarRentalSystem.UI
 
         }
 
+      
+
 
         private void btnCars_Click(object sender, EventArgs e)
         {
-            try
+            var result = _roleClaimManager.CheckUserRoleClaims("car.view");
+            if (result.IsSuccesful)
             {
                 FormCars formCars = new FormCars(this);
                 formCars.Show();
             }
-            catch (SecurityException ex)
+            else
             {
-                throw;
+                AlertUtil.Show(result.Message, FormAlert.MessageType.Error);
             }
-            
         }
 
         private void button5_Click(object sender, EventArgs e)
         {
+
             FormProfile formProfile = new FormProfile();
             formProfile.Show();
         }
 
         private void btnCustomers_Click(object sender, EventArgs e)
         {
-            FormCustomers customers = new FormCustomers(null);
-            customers.Show();
+            var result = _roleClaimManager.CheckUserRoleClaims("customer.view");
+            if (result.IsSuccesful)
+            {
+                FormCustomers customers = new FormCustomers(null);
+                customers.Show();
+            }
+            else
+            {
+                AlertUtil.Show(result.Message, FormAlert.MessageType.Error);
+            }
+            
         }
 
         private void btnUsers_Click(object sender, EventArgs e)
         {
-            FormUsers formUsers = new FormUsers();
-            formUsers.Show();
+            var result = _roleClaimManager.CheckUserRoleClaims("user.view");
+            if (result.IsSuccesful)
+            {
+                FormUsers formUsers = new FormUsers();
+                formUsers.Show();
+            }
+            else
+            {
+                AlertUtil.Show(result.Message, FormAlert.MessageType.Error);
+            }
+            
         }
         
         private void btnRentals_Click(object sender, EventArgs e)
         {
-            try
+            var result = _roleClaimManager.CheckUserRoleClaims("rental.view");
+            if (result.IsSuccesful)
             {
                 FormRental formRental = new FormRental(this);
                 formRental.Show();
             }
-            catch (SecurityException ex)
+            else
             {
-                AlertUtil.Show(ex.Message, FormAlert.MessageType.Error);
-
+                AlertUtil.Show(result.Message, FormAlert.MessageType.Error);
             }
+
+            
+            
+            
             
         }
 
         private void btnRentedCars_Click(object sender, EventArgs e)
         {
-            FormRentedCars formRentedCars = new FormRentedCars(this);
-            formRentedCars.Show();
+            var result = _roleClaimManager.CheckUserRoleClaims("rented.view");
+            if (result.IsSuccesful)
+            {
+                FormRentedCars formRentedCars = new FormRentedCars(this);
+                formRentedCars.Show();
+            }
+            else
+            {
+                AlertUtil.Show(result.Message, FormAlert.MessageType.Error);
+            }
+
+            
         }
 
         private void button6_Click(object sender, EventArgs e)
         {
-            FormStaticstics formStaticstics = new FormStaticstics();
-            formStaticstics.Show();
+            var result = _roleClaimManager.CheckUserRoleClaims("statistic.view");
+            if (result.IsSuccesful)
+            {
+                FormStaticstics formStaticstics = new FormStaticstics();
+                formStaticstics.Show();
+            }
+            else
+            {
+                AlertUtil.Show(result.Message, FormAlert.MessageType.Error);
+            }
+
+            
+        }
+
+        private void FormMain_Shown(object sender, EventArgs e)
+        {
+            _ = Wait();
+            
+        }
+
+        private async Task Wait()
+        {
+            FormProfile formProfile = null;
+            var result = userManager.CheckUserInfo(user);
+            await Task.Run(() =>
+            {
+                if (!result.IsSuccesful)
+                {
+                    Thread.Sleep(1000);
+
+                }
+ 
+            });
+            
+
+            if (!result.IsSuccesful)
+            {
+                MessageBox.Show("Profilinizde eksik bilgiler bulunmaktadır.Lütfen bilgerinizi güncelleyin", "Profil Bilgisi", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                formProfile = new FormProfile();
+                formProfile.Show();
+            }
         }
     }
 }

@@ -7,14 +7,18 @@ using System.Threading.Tasks;
 
 namespace CarRentalSystem.Entities.Concrete
 {
-    public class OperationClaim:IEntity
+    public class Role:IEntity
     {
-        public int OperationClaimId { get; set; }
+        public int RoleId { get; set; }
         public string? Name { get; set; }
+
 
         public bool State { get; set; }
 
-        public virtual ICollection<UserOperationClaim>? UserOperationClaims { get; set; }
+        public virtual ICollection<RoleClaim>? RoleClaims { get; set; }
+
+        public virtual ICollection<User>? Users { get; set; }
+
 
     }
 }

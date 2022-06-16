@@ -16,5 +16,7 @@ namespace CarRentalSystem.Business.Constants
         public static readonly string RegistrationFailed = "Kayıt Başarısız ";
         public static readonly string LoginFailed = "Giriş Başarısız ";
         public static readonly string UpdateFailed = "Güncelleme Başarısız ";
+        public static readonly string AuthorizationFailed = "Bu kısım için yetkiniz yoktur";
+
     }
 }

@@ -10,6 +10,7 @@ namespace CarRentalSystem.Business.Utilities
     public static class LoginCache
     {
         public static User? User { get; set; }
-        public static string[]? UserOperationClaims { get; set; }
+        public static string[]? RoleClaims { get; set; }
+
     }
 }

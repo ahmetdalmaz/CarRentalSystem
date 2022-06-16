@@ -75,6 +75,7 @@ namespace CarRentalSystem.UI
 
         private void btnSave_Click(object sender, EventArgs e)
         {
+
             var result = carManager.Add(new Car { Color = comboBoxColors.Text, FuelType = comboBoxFuelTypes.Text, Kilometre =(txtKilometre.Text), ModelId = (int)comboBoxModels.SelectedValue, SegmentId = (int)comboBoxSegments.SelectedValue, Plate = txtPlate.Text });
             if (result.IsSuccesful)
             {

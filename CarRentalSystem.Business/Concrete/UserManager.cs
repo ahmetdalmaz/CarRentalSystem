@@ -34,7 +34,7 @@ namespace CarRentalSystem.Business.Concrete
             {
                 byte[] passwordHash, passwordSalt;
                 HashingHelper.CreatePasswordHash(user.Password, out passwordHash, out passwordSalt);
-                _userDal.Add(new User { Name = user.Name, Surname = user.Surname, Email = user.Email, PasswordHash = passwordHash, PasswordSalt = passwordSalt, SecurityQuestion = user.SecurityQuestion, SecurityQuestionAnswer = user.SecurityQuestionAnswer, Address = user.Address, IdentityNumber = user.IdentityNumber, PhoneNumber = user.PhoneNumber });
+                _userDal.Add(new User { Name = user.Name, Surname = user.Surname, Email = user.Email, PasswordHash = passwordHash, PasswordSalt = passwordSalt, SecurityQuestion = user.SecurityQuestion, SecurityQuestionAnswer = user.SecurityQuestionAnswer, Address = user.Address, IdentityNumber = user.IdentityNumber, PhoneNumber = user.PhoneNumber, RoleId = user.RoleId });
                 return Response.Success(Messages.RegisterSuccesful);
             }
 
@@ -49,7 +49,6 @@ namespace CarRentalSystem.Business.Concrete
           
         }
 
-        [Authorize("admin")]
         public IResponse LoginAsync(LoginDto user)
         {
            var validationResult =  ValidationTool.Validate<LoginValidator>(user);
@@ -93,9 +92,9 @@ namespace CarRentalSystem.Business.Concrete
 
         }
 
-        public User GetByMail(string email)
+        public async Task<User> GetByMail(string email)
         {
-            return _userDal.Get(u => u.Email == email && u.State == true);
+            return await _userDal.GetAsync(u => u.Email == email && u.State == true);
         }
 
         public IResponse Delete(User user)
@@ -172,7 +171,7 @@ namespace CarRentalSystem.Business.Concrete
         }
 
 
-        [Authorize("admin")]
+      
         public IResponse Add(User user)
         {
             var validationResult = ValidationTool.Validate<UserValidator>(user);
@@ -197,7 +196,7 @@ namespace CarRentalSystem.Business.Concrete
 
         public IDataResponse<User> GetAdminUser()
         {
-           return Response<User>.Success(_userDal.Get(u=>u.UserOperationClaims.Any()));
+           return Response<User>.Success(_userDal.Get(u=>u.RoleId == 1));
         }
 
         public IDataResponse<User> GetUserById(int id)
@@ -207,9 +206,24 @@ namespace CarRentalSystem.Business.Concrete
 
         public async Task<IDataResponse<User>> GetAdminUserAsync()
         {
-            var result = await _userDal.GetAsync(u => u.UserOperationClaims.Any());
+            var result = await _userDal.GetAsync(u => u.RoleId == 1);
             return Response<User>.Success(result);
         }
 
+        public IDataResponse<bool> CheckUserInfo(User user)
+        {
+            if (user.SecurityQuestion== null)
+            {
+                return Response<bool>.Fail(false, new List<string> {""});
+
+            }
+            return Response<bool>.Success(false,"");
+
+        }
+
+        public IDataResponse<List<UserInfoDto>> GetUsersInfo()
+        {
+            return Response<List<UserInfoDto>>.Success(_userDal.GetUsers());
+        }
     }
 }

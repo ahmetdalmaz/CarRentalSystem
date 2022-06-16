@@ -32,7 +32,7 @@ namespace CarRentalSystem.UI
             maskedtxtNo.Text = user.PhoneNumber;
         }
 
-        private void btnUpdatePassword_Click(object sender, EventArgs e)
+        private async void btnUpdatePassword_Click(object sender, EventArgs e)
         {
 
             
@@ -43,7 +43,7 @@ namespace CarRentalSystem.UI
                 txtCurrentPassword.Clear();
                 txtNewPassword.Clear();
                 txtNewRePassword.Clear();
-                LoginCache.User =  userManager.GetByMail(user.Email);
+                LoginCache.User = await  userManager.GetByMail(user.Email);
             }
             else 
             {
@@ -51,7 +51,7 @@ namespace CarRentalSystem.UI
             }
         }
 
-        private void btnUpdateUserInformation_Click(object sender, EventArgs e)
+        private async void btnUpdateUserInformation_Click(object sender, EventArgs e)
         {
             user.IdentityNumber = txtTc.Text;
             user.PhoneNumber = maskedtxtNo.Text;
@@ -63,7 +63,7 @@ namespace CarRentalSystem.UI
             {
                 AlertUtil.Show("Bilgileriniz Güncellendi!", FormAlert.MessageType.Success);
                 LoginCache.User.Email = txtEmail.Text;
-                LoginCache.User = userManager.GetByMail(user.Email);
+                LoginCache.User =await userManager.GetByMail(user.Email);
             }
             else
             {

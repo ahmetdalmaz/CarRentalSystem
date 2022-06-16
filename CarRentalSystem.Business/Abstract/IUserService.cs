@@ -14,7 +14,7 @@ namespace CarRentalSystem.Business.Abstract
         IResponse Register(RegisterDto user);
         IResponse LoginAsync(LoginDto user);
         IDataResponse<List<User>> GetUsers();
-        User GetByMail(string email);
+        Task<User> GetByMail(string email);
         IResponse Delete(User user);
         IResponse ResetPassword(User user);
         IResponse UpdatePassword(User user,string currentPassword, string newPassword);
@@ -23,11 +23,8 @@ namespace CarRentalSystem.Business.Abstract
         IDataResponse<User> GetAdminUser();
         IDataResponse<User> GetUserById(int id);
         Task<IDataResponse<User>> GetAdminUserAsync();
-
-
-
-
-
-
+        IDataResponse<bool> CheckUserInfo(User user);
+        IDataResponse<List<UserInfoDto>> GetUsersInfo();
+   
     }
 }

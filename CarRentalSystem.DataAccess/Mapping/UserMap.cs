@@ -27,10 +27,11 @@ namespace CarRentalSystem.DataAccess.Mapping
            builder.Property(u=>u.IdentityNumber).HasColumnType("varchar").HasMaxLength(11);
            builder.Property(u => u.SecurityQuestion).HasColumnType("varchar").HasMaxLength(100);
            builder.Property(u => u.SecurityQuestionAnswer).HasColumnType("varchar").HasMaxLength(50);
-            builder.Property(u => u.PhoneNumber).HasColumnType("varchar").HasMaxLength(20);
+           builder.Property(u => u.PhoneNumber).HasColumnType("varchar").HasMaxLength(20);
            builder.Property(c => c.State).HasColumnType("bit").HasDefaultValue(true);
-            
-           
+           builder.HasOne(u => u.Role).WithMany(r => r.Users).HasForeignKey(u => u.RoleId);
+
+
 
 
 

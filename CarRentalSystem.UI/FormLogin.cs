@@ -20,14 +20,15 @@ namespace CarRentalSystem.UI
         }
         FormMain formMain = new FormMain();
         UserManager userManager = new(new EfUserDal());
-        private void button1_Click(object sender, EventArgs e)
+        private async void button1_Click(object sender, EventArgs e)
         {
             //Burada login fonksiyonuna bilgiler gönderiliyor.
              var result = userManager.LoginAsync(new Entities.Dtos.LoginDto { Email = txtMail.Text, Password = txtPassword.Text });
             if (result.IsSuccesful) //Eðer bilgiler baþarýyla doðrulandýysa buraya girer.
             {
-                var user = userManager.GetByMail(txtMail.Text); //Kullanýcý mail adresi ile bulunuyor.
-                LoginCache.User = user;
+                LoginCache.User =  await userManager.GetByMail(txtMail.Text); //Kullanýcý mail adresi ile bulunuyor.
+                
+
                 AlertUtil.Show(result.Message,FormAlert.MessageType.Success);
                
                   formMain.Show(); //ana sayfa açýlýyor.

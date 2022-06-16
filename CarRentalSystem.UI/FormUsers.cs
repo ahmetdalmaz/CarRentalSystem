@@ -1,6 +1,7 @@
 ﻿using CarRentalSystem.Business.Concrete;
 using CarRentalSystem.DataAccess.Concrete.EntityFramework;
 using CarRentalSystem.Entities.Concrete;
+using CarRentalSystem.Entities.Dtos;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -20,7 +21,8 @@ namespace CarRentalSystem.UI
             InitializeComponent();
         }
         UserManager userManager = new UserManager(new EfUserDal());
-        OperationClaimManager OperationClaimManager = new OperationClaimManager(new EfOperationClaimDal());
+        RoleManager OperationClaimManager = new RoleManager(new EfRoleDal());
+        
         private void FormUsers_Load(object sender, EventArgs e)
         {
             LoadData();
@@ -31,16 +33,28 @@ namespace CarRentalSystem.UI
         public void LoadData() 
         {
 
-            sfDgwUsers.DataSource = userManager.GetUsers().Data.Select(x => new {x.UserId, x.Name, x.Surname, x.Email, x.IdentityNumber,x.Address,x.PhoneNumber}).ToList();
+            sfDgwUsers.AutoGenerateColumnsMode = Syncfusion.WinForms.DataGrid.Enums.AutoGenerateColumnsMode.SmartReset;
+            sfDgwUsers.DataSource = userManager.GetUsers().Data;
+          
             comboBoxRoles.DataSource = OperationClaimManager.GetOperationClaims().Data;
-            comboBoxRoles.ValueMember = "OperationClaimId";
+            comboBoxRoles.ValueMember = "RoleId";
             comboBoxRoles.DisplayMember = "Name";
+
+            sfDgwUsers.Columns["PasswordHash"].Visible = false;
+            sfDgwUsers.Columns["PasswordSalt"].Visible = false;
+            sfDgwUsers.Columns["Gender"].Visible = false;
+            sfDgwUsers.Columns["State"].Visible = false;
+            sfDgwUsers.Columns["SecurityQuestion"].Visible = false;
+            sfDgwUsers.Columns["SecurityQuestionAnswer"].Visible = false;
+            sfDgwUsers.Columns["RoleId"].Visible = false;
+
         }
+
 
         private void btnAdd_Click(object sender, EventArgs e)
         {
 
-           var result= userManager.Add(new User { Name = txtName.Text, Surname = txtSurname.Text, Email = txtMail.Text, IdentityNumber = txtINumber.Text, PhoneNumber = maskedtxtPhoneNumber.Text, Address = richTextBox1.Text });
+           var result= userManager.Add(new User { Name = txtName.Text, Surname = txtSurname.Text, Email = txtMail.Text, IdentityNumber = txtINumber.Text, PhoneNumber = maskedtxtPhoneNumber.Text, Address = richTextBox1.Text,RoleId = (int)comboBoxRoles.SelectedValue });
             if (result.IsSuccesful)
             {
                 AlertUtil.Show(result.Message, FormAlert.MessageType.Success);
@@ -73,7 +87,7 @@ namespace CarRentalSystem.UI
 
         private void btnUpdate_Click(object sender, EventArgs e)
         {
-            userManager.Update(new User { UserId = 11, Name = txtName.Text, Surname = txtSurname.Text, Email = txtMail.Text, IdentityNumber = txtINumber.Text, PhoneNumber = maskedtxtPhoneNumber.Text, Address = richTextBox1.Text, State = true});
+            userManager.Update(new User { UserId = selectedUser.UserId, Name = txtName.Text, Surname = txtSurname.Text, Email = txtMail.Text, IdentityNumber = txtINumber.Text, PhoneNumber = maskedtxtPhoneNumber.Text, Address = richTextBox1.Text, RoleId = (int)comboBoxRoles.SelectedValue, PasswordHash = selectedUser.PasswordHash, PasswordSalt = selectedUser.PasswordSalt, SecurityQuestion = selectedUser.SecurityQuestion, SecurityQuestionAnswer = selectedUser.SecurityQuestionAnswer, State = true});
             LoadData();
             AlertUtil.Show("Kullanıcı Güncellendi. ", FormAlert.MessageType.Success);
         }
@@ -100,14 +114,16 @@ namespace CarRentalSystem.UI
         User selectedUser;
         private void sfDgwUsers_SelectionChanged(object sender, Syncfusion.WinForms.DataGrid.Events.SelectionChangedEventArgs e)
         {
-            var user = sfDgwUsers.CurrentItem;
+            selectedUser= (User)sfDgwUsers.CurrentItem;
+           
           
             txtName.Text = selectedUser.Name;
             txtSurname.Text = selectedUser.Surname;
             maskedtxtPhoneNumber.Text = selectedUser.PhoneNumber;
             txtMail.Text = selectedUser.Email;
             richTextBox1.Text = selectedUser.Address;
-
+            comboBoxRoles.SelectedValue = selectedUser.RoleId;
+            txtINumber.Text = selectedUser.IdentityNumber;
         }
     }
 }

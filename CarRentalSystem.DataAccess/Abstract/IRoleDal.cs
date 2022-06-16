@@ -7,7 +7,8 @@ using System.Threading.Tasks;
 
 namespace CarRentalSystem.DataAccess.Abstract
 {
-    public interface IUserOperationClaimDal:IEntityRepository<UserOperationClaim>
+    public interface IRoleDal:IEntityRepository<Role>
     {
+
     }
 }

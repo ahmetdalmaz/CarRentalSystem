@@ -31,9 +31,6 @@
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle5 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle6 = new System.Windows.Forms.DataGridViewCellStyle();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FormRoles));
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
@@ -43,22 +40,22 @@
             this.label1 = new System.Windows.Forms.Label();
             this.txtRoleName = new System.Windows.Forms.TextBox();
             this.tabPage2 = new System.Windows.Forms.TabPage();
+            this.sfDgwPermissions = new Syncfusion.WinForms.DataGrid.SfDataGrid();
             this.label3 = new System.Windows.Forms.Label();
             this.cmbUpdate = new System.Windows.Forms.CheckBox();
             this.cmbRemove = new System.Windows.Forms.CheckBox();
             this.cmbAdd = new System.Windows.Forms.CheckBox();
             this.cmbShow = new System.Windows.Forms.CheckBox();
-            this.comboBox1 = new System.Windows.Forms.ComboBox();
+            this.cmbDocumentTypes = new System.Windows.Forms.ComboBox();
             this.cmbRoles = new System.Windows.Forms.ComboBox();
             this.btnUpdatePermission = new System.Windows.Forms.Button();
             this.btnAddPermission = new System.Windows.Forms.Button();
-            this.dataGridView1 = new System.Windows.Forms.DataGridView();
             this.label2 = new System.Windows.Forms.Label();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgwRoles)).BeginInit();
             this.tabPage2.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.sfDgwPermissions)).BeginInit();
             this.SuspendLayout();
             // 
             // tabControl1
@@ -175,16 +172,16 @@
             // 
             // tabPage2
             // 
+            this.tabPage2.Controls.Add(this.sfDgwPermissions);
             this.tabPage2.Controls.Add(this.label3);
             this.tabPage2.Controls.Add(this.cmbUpdate);
             this.tabPage2.Controls.Add(this.cmbRemove);
             this.tabPage2.Controls.Add(this.cmbAdd);
             this.tabPage2.Controls.Add(this.cmbShow);
-            this.tabPage2.Controls.Add(this.comboBox1);
+            this.tabPage2.Controls.Add(this.cmbDocumentTypes);
             this.tabPage2.Controls.Add(this.cmbRoles);
             this.tabPage2.Controls.Add(this.btnUpdatePermission);
             this.tabPage2.Controls.Add(this.btnAddPermission);
-            this.tabPage2.Controls.Add(this.dataGridView1);
             this.tabPage2.Controls.Add(this.label2);
             this.tabPage2.Location = new System.Drawing.Point(4, 29);
             this.tabPage2.Name = "tabPage2";
@@ -193,6 +190,22 @@
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "Rol Yetkileri";
             this.tabPage2.UseVisualStyleBackColor = true;
+            // 
+            // sfDgwPermissions
+            // 
+            this.sfDgwPermissions.AccessibleName = "Table";
+            this.sfDgwPermissions.AllowFiltering = true;
+            this.sfDgwPermissions.Location = new System.Drawing.Point(373, 16);
+            this.sfDgwPermissions.Name = "sfDgwPermissions";
+            this.sfDgwPermissions.ShowGroupDropArea = true;
+            this.sfDgwPermissions.Size = new System.Drawing.Size(320, 211);
+            this.sfDgwPermissions.Style.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(100)))), ((int)(((byte)(100)))));
+            this.sfDgwPermissions.Style.CheckBoxStyle.CheckedBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(120)))), ((int)(((byte)(215)))));
+            this.sfDgwPermissions.Style.CheckBoxStyle.CheckedBorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(120)))), ((int)(((byte)(215)))));
+            this.sfDgwPermissions.Style.CheckBoxStyle.IndeterminateBorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(120)))), ((int)(((byte)(215)))));
+            this.sfDgwPermissions.Style.HyperlinkStyle.DefaultLinkColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(120)))), ((int)(((byte)(215)))));
+            this.sfDgwPermissions.TabIndex = 93;
+            this.sfDgwPermissions.Text = "sfDataGrid1";
             // 
             // label3
             // 
@@ -247,18 +260,19 @@
             this.cmbShow.UseVisualStyleBackColor = true;
             this.cmbShow.CheckStateChanged += new System.EventHandler(this.cmbShow_CheckStateChanged);
             // 
-            // comboBox1
+            // cmbDocumentTypes
             // 
-            this.comboBox1.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.comboBox1.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.comboBox1.FormattingEnabled = true;
-            this.comboBox1.Items.AddRange(new object[] {
+            this.cmbDocumentTypes.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmbDocumentTypes.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            this.cmbDocumentTypes.FormattingEnabled = true;
+            this.cmbDocumentTypes.Items.AddRange(new object[] {
             "Araçlar"});
-            this.comboBox1.Location = new System.Drawing.Point(119, 73);
-            this.comboBox1.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            this.comboBox1.Name = "comboBox1";
-            this.comboBox1.Size = new System.Drawing.Size(181, 28);
-            this.comboBox1.TabIndex = 87;
+            this.cmbDocumentTypes.Location = new System.Drawing.Point(119, 73);
+            this.cmbDocumentTypes.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            this.cmbDocumentTypes.Name = "cmbDocumentTypes";
+            this.cmbDocumentTypes.Size = new System.Drawing.Size(181, 28);
+            this.cmbDocumentTypes.TabIndex = 87;
+            this.cmbDocumentTypes.SelectedValueChanged += new System.EventHandler(this.cmbDocumentTypes_SelectedValueChanged);
             // 
             // cmbRoles
             // 
@@ -300,39 +314,6 @@
             this.btnAddPermission.UseVisualStyleBackColor = false;
             this.btnAddPermission.Click += new System.EventHandler(this.btnAddPermission_Click);
             // 
-            // dataGridView1
-            // 
-            dataGridViewCellStyle4.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(128)))));
-            this.dataGridView1.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle4;
-            this.dataGridView1.BackgroundColor = System.Drawing.Color.FromArgb(((int)(((byte)(246)))), ((int)(((byte)(249)))), ((int)(((byte)(252)))));
-            this.dataGridView1.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.dataGridView1.ColumnHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.None;
-            dataGridViewCellStyle5.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle5.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(254)))), ((int)(((byte)(80)))), ((int)(((byte)(81)))));
-            dataGridViewCellStyle5.Font = new System.Drawing.Font("Segoe UI Black", 10F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Italic))), System.Drawing.GraphicsUnit.Point);
-            dataGridViewCellStyle5.ForeColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle5.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(254)))), ((int)(((byte)(50)))), ((int)(((byte)(50)))));
-            dataGridViewCellStyle5.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle5.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.dataGridView1.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle5;
-            this.dataGridView1.ColumnHeadersHeight = 30;
-            dataGridViewCellStyle6.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle6.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle6.Font = new System.Drawing.Font("Segoe UI Black", 10F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Italic))), System.Drawing.GraphicsUnit.Point);
-            dataGridViewCellStyle6.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(55)))), ((int)(((byte)(63)))), ((int)(((byte)(83)))));
-            dataGridViewCellStyle6.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(128)))));
-            dataGridViewCellStyle6.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle6.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.dataGridView1.DefaultCellStyle = dataGridViewCellStyle6;
-            this.dataGridView1.EnableHeadersVisualStyles = false;
-            this.dataGridView1.Location = new System.Drawing.Point(385, 15);
-            this.dataGridView1.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            this.dataGridView1.Name = "dataGridView1";
-            this.dataGridView1.ReadOnly = true;
-            this.dataGridView1.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dataGridView1.Size = new System.Drawing.Size(304, 212);
-            this.dataGridView1.TabIndex = 83;
-            // 
             // label2
             // 
             this.label2.AutoSize = true;
@@ -361,7 +342,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.dgwRoles)).EndInit();
             this.tabPage2.ResumeLayout(false);
             this.tabPage2.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.sfDgwPermissions)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -378,14 +359,14 @@
         private TabPage tabPage2;
         private Button btnUpdatePermission;
         private Button btnAddPermission;
-        private DataGridView dataGridView1;
         private Label label2;
         private Label label3;
         private CheckBox cmbUpdate;
         private CheckBox cmbRemove;
         private CheckBox cmbAdd;
         private CheckBox cmbShow;
-        private ComboBox comboBox1;
+        private ComboBox cmbDocumentTypes;
         private ComboBox cmbRoles;
+        private Syncfusion.WinForms.DataGrid.SfDataGrid sfDgwPermissions;
     }
 }

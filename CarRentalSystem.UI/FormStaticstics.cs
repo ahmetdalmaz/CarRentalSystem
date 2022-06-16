@@ -155,14 +155,14 @@ namespace CarRentalSystem.UI
             dateTimePicker1.Format = DateTimePickerFormat.Custom;
             dateTimePicker1.CustomFormat = "MMMM/yyyy";
             dateTimePicker1.ShowUpDown = true;
-            dateTimePicker1.MinDate = rentals[0].RentalDate;
+       
             
 
 
             dateTimePicker2.Format = DateTimePickerFormat.Custom;
             dateTimePicker2.CustomFormat = "MMMM/yyyy";
             dateTimePicker2.ShowUpDown = true;
-            dateTimePicker2.MinDate = rentals[0].RentalDate;
+         
         }
 
         private void radioDay_CheckedChanged(object sender, EventArgs e)

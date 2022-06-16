@@ -1,4 +1,5 @@
 ﻿using CarRentalSystem.Entities.Concrete;
+using CarRentalSystem.Entities.Dtos;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,8 +8,9 @@ using System.Threading.Tasks;
 
 namespace CarRentalSystem.DataAccess.Abstract
 {
-    public interface IOperationClaimDal:IEntityRepository<OperationClaim>
+    public interface IRoleClaimDal:IEntityRepository<RoleClaim>
     {
+        List<RoleClaimDto> GetRoleClaims();
 
     }
 }

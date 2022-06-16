@@ -57,11 +57,13 @@ namespace CarRentalSystem.DataAccess.Migrations
 				SET @SQL = 'select CarId,Plate,BrandName,ModelName,Color, SegmentName,Kilometre,FuelType from Cars,Models tblm,Brands tblb,Segments tbls
 				where CarId not in
 				(select CarId from Rentals where 
-				(Rentals.State = ''r'' or Rentals.State = ''k'') and '''+CONVERT(VARCHAR,@RentalDate,23)+'''< RentalDate and '''+CONVERT(VARCHAR,@ReturnDate,23)+'''>RentalDate and '''+CONVERT(VARCHAR,@ReturnDate,23)+'''<= ReturnDate
-				OR '''+CONVERT(VARCHAR,@RentalDate,23)+'''<= RentalDate and '''+CONVERT(VARCHAR,@ReturnDate,23)+'''> ReturnDate and (Rentals.State = ''r'' or Rentals.State = ''k'')
-				OR '''+CONVERT(VARCHAR,@RentalDate,23)+'''< ReturnDate and '''+CONVERT(VARCHAR,@RentalDate,23)+'''>= RentalDate and (Rentals.State = ''r'' or Rentals.State = ''k'') ) 
+				(Rentals.State = ''r'' or Rentals.State = ''k'') and '''+CONVERT(VARCHAR,@RentalDate,25)+'''< RentalDate and '''+CONVERT(VARCHAR,@ReturnDate,25)+'''>RentalDate and '''+CONVERT(VARCHAR,@ReturnDate,25)+'''<= ReturnDate
+				OR '''+CONVERT(VARCHAR,@RentalDate,25)+'''<= RentalDate and '''+CONVERT(VARCHAR,@ReturnDate,25)+'''> ReturnDate and (Rentals.State = ''r'' or Rentals.State = ''k'')
+				OR '''+CONVERT(VARCHAR,@RentalDate,25)+'''< ReturnDate and '''+CONVERT(VARCHAR,@RentalDate,25)+'''>= RentalDate and (Rentals.State = ''r'' or Rentals.State = ''k'') ) 
 				AND Cars.ModelId = tblm.ModelId and Cars.SegmentId = tbls.SegmentId AND tblm.BrandId = tblb.BrandId
 				AND '+@ColorFilter+'AND '+@FuelTypeFilter+'AND '+@PlateFilter+'AND '+@ModelNameFilter+'AND '+@SegmentNameFilter+''
+			
+
 	
 	
 				EXEC(@SQL)

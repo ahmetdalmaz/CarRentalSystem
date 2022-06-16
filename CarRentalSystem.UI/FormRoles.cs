@@ -1,4 +1,6 @@
-﻿using CarRentalSystem.Business.Concrete;
+﻿using CarRentalSystem.Business.Abstract;
+using CarRentalSystem.Business.Concrete;
+using CarRentalSystem.Business.DependencyResolver;
 using CarRentalSystem.DataAccess.Concrete.EntityFramework;
 using CarRentalSystem.Entities.Concrete;
 using System;
@@ -30,27 +32,58 @@ namespace CarRentalSystem.UI
         {
             InitializeComponent();
             _formUsers = formUsers;
+            _roleClaimManager = InstanceFactory.GetInstance<IRoleClaimService>();
         }
-
-        OperationClaimManager operationClaimManager = new OperationClaimManager(new EfOperationClaimDal());
+        IRoleClaimService _roleClaimManager;
+        RoleManager operationClaimManager = new RoleManager(new EfRoleDal());
         private void FormRoles_Load(object sender, EventArgs e)
         {
             LoadData();
+
         }
+
+       
 
         private void LoadData() 
         {
+
+            cmbDocumentTypes.DataSource = FillComboBox().ToList();
+            cmbDocumentTypes.ValueMember = "Key";
+            cmbDocumentTypes.DisplayMember = "Value";
+
+            sfDgwPermissions.DataSource = _roleClaimManager.GetRoleClaims().Data;
+            sfDgwPermissions.Columns["ClaimName"].FilterPredicates.Add(new Syncfusion.Data.FilterPredicate { FilterType = Syncfusion.Data.FilterType.StartsWith, FilterValue = (string)cmbDocumentTypes.SelectedValue, FilterBehavior = Syncfusion.Data.FilterBehavior.StringTyped });
+
+
             dgwRoles.DataSource = operationClaimManager.GetOperationClaims().Data;
             cmbRoles.DataSource = operationClaimManager.GetOperationClaims().Data;
-            cmbRoles.ValueMember = "OperationClaimId";
+            cmbRoles.ValueMember = "RoleId";
             cmbRoles.DisplayMember = "Name";
-        
-        
+
+
+            
         }
+
+       
+
+        private IDictionary<string,string> FillComboBox() 
+        {
+            IDictionary<string,string> data = new Dictionary<string,string>();
+            data.Add("car", "Araçlar");
+            data.Add("customer", "Müşteriler");
+            data.Add("rental", "Sözleşme");
+            data.Add("user", "Kullanıcılar");
+            data.Add("statistic", "İstatistikler");
+            data.Add("rented", "Kiralanan Araçlar");
+            data.Add("carsettings", "Ayarlar");
+            data.Add("role", "Yetkiler");
+            return data;
+        }
+
 
         private void btnAddRole_Click(object sender, EventArgs e)
         {
-            operationClaimManager.Add(new Entities.Concrete.OperationClaim { Name = txtRoleName.Text });
+            operationClaimManager.Add(new Entities.Concrete.Role { Name = txtRoleName.Text });
             LoadData();
             _formUsers.LoadData();
             AlertUtil.Show("Rol Eklendi !", FormAlert.MessageType.Success);
@@ -67,7 +100,7 @@ namespace CarRentalSystem.UI
             DialogResult dialogResult = MessageBox.Show("Silmek İstediğinize Emin misiniz ? ", "Rol Silme", MessageBoxButtons.YesNo,MessageBoxIcon.Question);
             if (dialogResult == DialogResult.Yes)
             {
-                operationClaimManager.Delete(new Entities.Concrete.OperationClaim { OperationClaimId = (int)dgwRoles.CurrentRow.Cells[0].Value });
+                operationClaimManager.Delete(new Entities.Concrete.Role { RoleId = (int)dgwRoles.CurrentRow.Cells[0].Value });
                 LoadData();
                 AlertUtil.Show("Rol Silindi", FormAlert.MessageType.Success);
                 _formUsers.LoadData();
@@ -78,28 +111,64 @@ namespace CarRentalSystem.UI
 
         private void btnUpdateRole_Click(object sender, EventArgs e)
         {
-            operationClaimManager.Update(new Entities.Concrete.OperationClaim { OperationClaimId = id, Name = txtRoleName.Text });
+            operationClaimManager.Update(new Entities.Concrete.Role { RoleId = id, Name = txtRoleName.Text });
             LoadData();
             AlertUtil.Show("Rol Güncellendi", FormAlert.MessageType.Success);
             _formUsers.LoadData();
         }
 
+        public enum PermissionState 
+        {
+            view,
+            add,
+            update,
+            delete
+        }
+
+
         private void btnAddPermission_Click(object sender, EventArgs e)
         {
+            List<CheckBox> checkBoxes = new List<CheckBox>();
+            List<RoleClaim> roleClaims = new List<RoleClaim>();
+            checkBoxes.Add(cmbAdd);
+            checkBoxes.Add(cmbRemove);
+            checkBoxes.Add(cmbShow);
+            checkBoxes.Add(cmbUpdate);
+            string selectedValue = (string)cmbDocumentTypes.SelectedValue;
+            foreach (var checkBox in checkBoxes)
+            {
+                if (cmbAdd.Checked && checkBox == cmbAdd)
+                {
+                    roleClaims.Add(new RoleClaim { Name = selectedValue + ".add", RoleId = (int)cmbRoles.SelectedValue });
 
+
+                }
+                else if (cmbRemove.Checked && checkBox == cmbRemove) { roleClaims.Add(new RoleClaim { Name = selectedValue + ".delete", RoleId = (int)cmbRoles.SelectedValue }); }
+                else if (cmbShow.Checked && checkBox == cmbShow) { roleClaims.Add(new RoleClaim { Name = selectedValue + ".view", RoleId = (int)cmbRoles.SelectedValue }); }
+                else if(cmbUpdate.Checked && checkBox == cmbUpdate) { roleClaims.Add(new RoleClaim { Name = selectedValue + ".update", RoleId = (int)cmbRoles.SelectedValue }); }
+            }
+            _roleClaimManager.Add(roleClaims);
+            LoadData();
+            AlertUtil.Show("Başarıyla Yetkilendirildi", FormAlert.MessageType.Success);
         }
-        List<UserOperationClaim> userOperationClaims = new List<UserOperationClaim>();
+     
         private void cmbShow_CheckStateChanged(object sender, EventArgs e)
         {
-            if (cmbShow.CheckState == CheckState.Checked)
+           
+        }
+
+        private void cmbDocumentTypes_SelectedValueChanged(object sender, EventArgs e)
+        {
+            
+
+            if (sfDgwPermissions.Columns["ClaimName"] !=null)
             {
-                userOperationClaims.Add(new UserOperationClaim { OperationClaimId = ((OperationClaim)cmbRoles.SelectedItem).OperationClaimId, UserId = 1 });
+                sfDgwPermissions.Columns["ClaimName"].FilterPredicates.Clear();
+                sfDgwPermissions.Columns["ClaimName"].FilterPredicates.Add(new Syncfusion.Data.FilterPredicate { FilterType = Syncfusion.Data.FilterType.StartsWith, FilterValue = (string)cmbDocumentTypes.SelectedValue, FilterBehavior = Syncfusion.Data.FilterBehavior.StringTyped });
+
 
             }
-            else
-            {
 
-            }
         }
     }
 }
