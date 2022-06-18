@@ -12,7 +12,8 @@ namespace CarRentalSystem.Business.ValidationRules
     {
         public ModelValidator()
         {
-
+            RuleFor(m => m.ModelName).NotEmpty().WithMessage("Model adı boş olamaz");
+            
         }
     }
 }

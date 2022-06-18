@@ -34,21 +34,34 @@ namespace CarRentalSystem.UI
 
         private async void btnUpdatePassword_Click(object sender, EventArgs e)
         {
+            if (string.IsNullOrEmpty(txtCurrentPassword.Text)|| string.IsNullOrEmpty(txtNewPassword.Text)|| string.IsNullOrEmpty(txtNewRePassword.Text))
+            {
+                AlertUtil.Show("Şifre alanları boş geçilemez..", FormAlert.MessageType.Error);
+            }
+            else if (txtNewPassword.Text != txtNewRePassword.Text)
+            {
 
+                AlertUtil.Show("Şifreleriniz uyuşmuyor..", FormAlert.MessageType.Error);
+            }
+            else
+            {
+                var result = userManager.UpdatePassword(user, txtCurrentPassword.Text, txtNewPassword.Text);
+                if (result.IsSuccesful)
+                {
+                    AlertUtil.Show("Şifreniz başarı ile güncellendi!", FormAlert.MessageType.Success);
+                    txtCurrentPassword.Clear();
+                    txtNewPassword.Clear();
+                    txtNewRePassword.Clear();
+                    LoginCache.User = await userManager.GetByMail(user.Email);
+                }
+
+                else
+                {
+                    AlertUtil.Show(result.Message, FormAlert.MessageType.Error);
+                }
+            }
             
-           var result = userManager.UpdatePassword(user,txtCurrentPassword.Text, txtNewPassword.Text);
-            if (result.IsSuccesful)
-            {
-                AlertUtil.Show("Şifreniz başarı ile güncellendi!", FormAlert.MessageType.Success);
-                txtCurrentPassword.Clear();
-                txtNewPassword.Clear();
-                txtNewRePassword.Clear();
-                LoginCache.User = await  userManager.GetByMail(user.Email);
-            }
-            else 
-            {
-                AlertUtil.Show("Bir hata meydana geldi!", FormAlert.MessageType.Error);
-            }
+           
         }
 
         private async void btnUpdateUserInformation_Click(object sender, EventArgs e)

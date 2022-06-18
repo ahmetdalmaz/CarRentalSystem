@@ -10,6 +10,11 @@ namespace CarRentalSystem.Business.ValidationRules
 {
     public class BrandValidator: AbstractValidator<Brand>
     {
+        public BrandValidator()
+        {
+            RuleFor(b => b.BrandName).NotEmpty().WithMessage("Marka Adı boş olamaz");
+            
+        }
     }
 }
 

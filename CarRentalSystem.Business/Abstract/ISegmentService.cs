@@ -10,8 +10,8 @@ namespace CarRentalSystem.Business.Abstract
 {
     public interface ISegmentService
     {
-        void Add(Segment segment);
-        void Update(Segment segment);
+        IResponse Add(Segment segment);
+        IResponse Update(Segment segment);
         void Delete(Segment segment);
         List<Segment> GetSegments();
         Task<IDataResponse<List<Segment>>> GetAllAsync();

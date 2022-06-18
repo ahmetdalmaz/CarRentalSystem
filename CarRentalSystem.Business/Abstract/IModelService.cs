@@ -1,4 +1,5 @@
-﻿using CarRentalSystem.Entities.Concrete;
+﻿using CarRentalSystem.Business.Responses;
+using CarRentalSystem.Entities.Concrete;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,8 +10,8 @@ namespace CarRentalSystem.Business.Abstract
 {
     public interface IModelService
     {
-        void Add(Model model);
-        void Update(Model model);
+        IResponse Add(Model model);
+        IResponse Update(Model model);
         void Delete(Model model);
         List<Model> GetModels();
         Task<List<Model>> GetModelsByBrandId(int brandId);

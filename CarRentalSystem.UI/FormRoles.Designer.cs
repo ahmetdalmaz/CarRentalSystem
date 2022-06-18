@@ -194,9 +194,11 @@
             // sfDgwPermissions
             // 
             this.sfDgwPermissions.AccessibleName = "Table";
+            this.sfDgwPermissions.AllowEditing = false;
             this.sfDgwPermissions.AllowFiltering = true;
             this.sfDgwPermissions.Location = new System.Drawing.Point(373, 16);
             this.sfDgwPermissions.Name = "sfDgwPermissions";
+            this.sfDgwPermissions.SelectionMode = Syncfusion.WinForms.DataGrid.Enums.GridSelectionMode.Multiple;
             this.sfDgwPermissions.ShowGroupDropArea = true;
             this.sfDgwPermissions.Size = new System.Drawing.Size(320, 211);
             this.sfDgwPermissions.Style.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(100)))), ((int)(((byte)(100)))));
@@ -206,6 +208,7 @@
             this.sfDgwPermissions.Style.HyperlinkStyle.DefaultLinkColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(120)))), ((int)(((byte)(215)))));
             this.sfDgwPermissions.TabIndex = 93;
             this.sfDgwPermissions.Text = "sfDataGrid1";
+            this.sfDgwPermissions.SelectionChanged += new Syncfusion.WinForms.DataGrid.Events.SelectionChangedEventHandler(this.sfDgwPermissions_SelectionChanged);
             // 
             // label3
             // 
@@ -284,6 +287,7 @@
             this.cmbRoles.Name = "cmbRoles";
             this.cmbRoles.Size = new System.Drawing.Size(181, 28);
             this.cmbRoles.TabIndex = 86;
+            this.cmbRoles.SelectedValueChanged += new System.EventHandler(this.cmbRoles_SelectedValueChanged);
             // 
             // btnUpdatePermission
             // 
@@ -298,6 +302,7 @@
             this.btnUpdatePermission.TabIndex = 85;
             this.btnUpdatePermission.Text = "Güncelle";
             this.btnUpdatePermission.UseVisualStyleBackColor = false;
+            this.btnUpdatePermission.Click += new System.EventHandler(this.btnUpdatePermission_Click);
             // 
             // btnAddPermission
             // 

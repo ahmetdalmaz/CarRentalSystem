@@ -12,7 +12,10 @@ namespace CarRentalSystem.Business.ValidationRules
     {
         public SegmentValidator()
         {
-
+            RuleFor(s => s.SegmentName).NotEmpty().WithMessage("Segment adı boş geçilemez");
+            RuleFor(s => s.DailyPrice).NotEmpty().WithMessage("Segment ücreti boş geçilemez");
+            RuleFor(s => s.MonthlyPrice).NotEmpty().WithMessage("Segment ücreti boş geçilemez");
+            RuleFor(s => s.WeeklyPrice).NotEmpty().WithMessage("Segment ücreti boş geçilemez");
         }
     }
 }

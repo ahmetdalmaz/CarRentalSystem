@@ -10,8 +10,8 @@ namespace CarRentalSystem.Business.Abstract
 {
     public interface IBrandService
     {
-        void Add(Brand brand);
-        void Update(Brand brand);
+        IResponse Add(Brand brand);
+        IResponse Update(Brand brand);
         void Delete(Brand brand);
         List<Brand> GetBrands();
         Task<IDataResponse<List<Brand>>> GetAllAsync();

@@ -5,7 +5,6 @@ using CarRentalSystem.Business.Concrete;
 using CarRentalSystem.Business.Utilities.Interceptors;
 using CarRentalSystem.DataAccess.Abstract;
 using CarRentalSystem.DataAccess.Concrete.EntityFramework;
-using Castle.DynamicProxy;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -46,15 +45,6 @@ namespace CarRentalSystem.Business.DependencyResolver
 
             builder.RegisterType<RoleManager>().As<IRoleService>().SingleInstance();
             builder.RegisterType<EfRoleDal>().As<IRoleDal>().SingleInstance();
-
-            var assembly = System.Reflection.Assembly.GetExecutingAssembly();
-
-            builder.RegisterAssemblyTypes(assembly).AsImplementedInterfaces()
-                .EnableInterfaceInterceptors(new ProxyGenerationOptions()
-                {
-                    Selector = new AspectInterceptorSelector()
-                }).SingleInstance();
-         
 
         }
     }

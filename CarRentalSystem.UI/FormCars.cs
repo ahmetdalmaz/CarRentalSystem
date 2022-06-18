@@ -24,17 +24,27 @@ namespace CarRentalSystem.UI
             InitializeComponent();
             _formMain = formMain;
             carManager =   InstanceFactory.GetInstance<ICarService>();
+            _roleClaimManager = InstanceFactory.GetInstance<IRoleClaimService>();
 
         }
         private ICarService carManager;
-
+        IRoleClaimService _roleClaimManager;
         BrandManager brandManager = new BrandManager(new EfBrandDal());
         ModelManager modelManager = new ModelManager(new EfModelDal());
         SegmentManager segmentManager = new SegmentManager(new EfSegmentDal());
         private void ayarlarToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            FormCarSettings formCarSettings = new FormCarSettings(this);
-            formCarSettings.Show();
+            var claim = _roleClaimManager.CheckUserRoleClaims("settings.view");
+            if (claim.IsSuccesful)
+            {
+                FormCarSettings formCarSettings = new FormCarSettings(this);
+                formCarSettings.Show();
+            }
+            else
+            {
+                AlertUtil.Show(claim.Message, FormAlert.MessageType.Error);
+            }
+            
         }
 
         private void FormCars_Load(object sender, EventArgs e)
@@ -75,25 +85,33 @@ namespace CarRentalSystem.UI
 
         private void btnSave_Click(object sender, EventArgs e)
         {
-
-            var result = carManager.Add(new Car { Color = comboBoxColors.Text, FuelType = comboBoxFuelTypes.Text, Kilometre =(txtKilometre.Text), ModelId = (int)comboBoxModels.SelectedValue, SegmentId = (int)comboBoxSegments.SelectedValue, Plate = txtPlate.Text });
-            if (result.IsSuccesful)
+            var claim = _roleClaimManager.CheckUserRoleClaims("car.add");
+            if (claim.IsSuccesful)
             {
-                LoadData();
-                _formMain.LoadData();
-                AlertUtil.Show(result.Message, FormAlert.MessageType.Success);
+                var result = carManager.Add(new Car { Color = comboBoxColors.Text, FuelType = comboBoxFuelTypes.Text, Kilometre = (txtKilometre.Text), ModelId = (int)comboBoxModels.SelectedValue, SegmentId = (int)comboBoxSegments.SelectedValue, Plate = txtPlate.Text });
+                if (result.IsSuccesful)
+                {
+                    LoadData();
+                    _formMain.LoadData();
+                    AlertUtil.Show(result.Message, FormAlert.MessageType.Success);
+                }
+                else
+                {
+                    string errors = "Lütfen doğru ve eksiksiz şekilde doldurunuz \n";
+                    foreach (var item in result.Errors)
+                    {
+                        errors += item + "\n";
+                    }
+
+                    AlertUtil.Show(errors, FormAlert.MessageType.Error);
+                }
+
+
             }
             else
             {
-                string errors = "Lütfen doğru ve eksiksiz şekilde doldurunuz \n";
-                foreach (var item in result.Errors)
-                {
-                    errors += item + "\n";
-                }
-
-                AlertUtil.Show(errors, FormAlert.MessageType.Error);
+                AlertUtil.Show(claim.Message, FormAlert.MessageType.Error);
             }
-            
         }
 
         private void comboBoxBrands_SelectedValueChanged(object sender, EventArgs e)
@@ -105,23 +123,34 @@ namespace CarRentalSystem.UI
 
         private void btnUpdate_Click(object sender, EventArgs e)
         {
-          
-            var result =  carManager.Update(new Car { CarId = 11, Color = comboBoxColors.Text, FuelType = comboBoxFuelTypes.Text, Kilometre =(txtKilometre.Text), ModelId = (int)comboBoxModels.SelectedValue, SegmentId = (int)comboBoxSegments.SelectedValue, Plate = txtPlate.Text, State = true});
-            if (result.IsSuccesful)
+            var claim = _roleClaimManager.CheckUserRoleClaims("car.update");
+
+            if (claim.IsSuccesful)
             {
-                LoadData();
-                AlertUtil.Show(result.Message, FormAlert.MessageType.Success);
+                var result = carManager.Update(new Car { CarId = selectedCar.CarId, Color = comboBoxColors.Text, FuelType = comboBoxFuelTypes.Text, Kilometre = (txtKilometre.Text), ModelId = (int)comboBoxModels.SelectedValue, SegmentId = (int)comboBoxSegments.SelectedValue, Plate = txtPlate.Text, State = true });
+                if (result.IsSuccesful)
+                {
+                    LoadData();
+                    AlertUtil.Show(result.Message, FormAlert.MessageType.Success);
+                }
+                else
+                {
+                    string errors = "Lütfen doğru ve eksiksiz şekilde doldurunuz \n";
+                    foreach (var item in result.Errors)
+                    {
+                        errors += item + "\n";
+                    }
+
+                    AlertUtil.Show(errors, FormAlert.MessageType.Error);
+                }
+
             }
             else
             {
-                string errors = "Lütfen doğru ve eksiksiz şekilde doldurunuz \n";
-                foreach (var item in result.Errors)
-                {
-                    errors += item + "\n";
-                }
-
-                AlertUtil.Show(errors, FormAlert.MessageType.Error);
+                AlertUtil.Show(claim.Message, FormAlert.MessageType.Error);
             }
+
+           
             
         }
 
@@ -147,15 +176,24 @@ namespace CarRentalSystem.UI
         private void sfDgwCars_CellDoubleClick(object sender, Syncfusion.WinForms.DataGrid.Events.CellClickEventArgs e)
         {
             DialogResult dialogResult = MessageBox.Show("Silmek İstediğinize Emin misiniz ? ", "Araç Silme", MessageBoxButtons.YesNo);
-
-            if (dialogResult == DialogResult.Yes)
+            var claim = _roleClaimManager.CheckUserRoleClaims("car.delete");
+            if (claim.IsSuccesful)
             {
-                Car car = carManager.GetCarById((int)selectedCar.CarId);
-                car.State = false;
-                carManager.Update(car);
-                LoadData();
+                if (dialogResult == DialogResult.Yes)
+                {
+                    Car car = carManager.GetCarById((int)selectedCar.CarId);
+                    car.State = false;
+                    carManager.Update(car);
+                    LoadData();
 
+                }
             }
+            else
+            {
+                AlertUtil.Show(claim.Message, FormAlert.MessageType.Error);
+            }
+
+            
 
         }
     }

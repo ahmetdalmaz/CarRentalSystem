@@ -156,7 +156,7 @@ namespace CarRentalSystem.Business.Concrete
             }
             else
             {
-                return Response.Fail(new List<string> {"hata oldu"});
+                return Response.Fail("Bir hata meydana geldi");
             }
            
 
@@ -166,8 +166,18 @@ namespace CarRentalSystem.Business.Concrete
 
         public IResponse Update(User user)
         {
-            _userDal.Update(user);
-            return Response.Success();
+            var validationResult = ValidationTool.Validate<UserValidator>(user);
+            if (validationResult.Count > 0)
+            {
+                return Response.Fail(Messages.RegistrationFailed, validationResult);
+            }
+            else
+            {
+                _userDal.Update(user);
+                return Response.Success();
+
+            }
+            
         }
 
 

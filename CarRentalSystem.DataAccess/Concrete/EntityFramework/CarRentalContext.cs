@@ -15,7 +15,7 @@ namespace CarRentalSystem.DataAccess.Concrete.EntityFramework
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             optionsBuilder.UseSqlServer(@"Server=tcp:azuredbsqlserver.database.windows.net,1433;Initial Catalog=CarRental;Persist Security Info=False;User ID=serveradmin;Password=198719877aA*;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;");
-           
+           // optionsBuilder.UseSqlServer(@"Server=DESKTOP-03E9IUD;Database=CarRental;Trusted_Connection=True;");
         }
 
         public DbSet<User>? Users { get; set; }

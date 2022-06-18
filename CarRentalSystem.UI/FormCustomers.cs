@@ -25,9 +25,11 @@ namespace CarRentalSystem.UI
             _formRental = formRental;
 
             _customerManager = InstanceFactory.GetInstance<ICustomerService>();
+            _roleClaimService = InstanceFactory.GetInstance<IRoleClaimService>();
         }
      
         private ICustomerService _customerManager;
+        private IRoleClaimService _roleClaimService;
         private void FormCustomers_Load(object sender, EventArgs e)
         {
             IsFormNull();
@@ -38,9 +40,10 @@ namespace CarRentalSystem.UI
     
         private void btnUpdateCustomer_Click(object sender, EventArgs e)
         {
-            try
+            var claim = _roleClaimService.CheckUserRoleClaims("customer.update");
+            if (claim.IsSuccesful)
             {
-                var result = _customerManager.Update(new Customer { CustomerId = 11, Address = txtAddress.Text, Email = txtMail.Text, IdentityNumber = txtTc.Text, Name = txtName.Text, PhoneNumber = maskedtxtPhoneNumber.Text, Surname = txtSurname.Text, State = true });
+                var result = _customerManager.Update(new Customer { CustomerId = selectedCustomer.CustomerId, Address = txtAddress.Text, Email = txtMail.Text, IdentityNumber = txtTc.Text, Name = txtName.Text, PhoneNumber = maskedtxtPhoneNumber.Text, Surname = txtSurname.Text, State = true });
                 if (result.IsSuccesful)
                 {
                     AlertUtil.Show("Güncelleme Başarılı", FormAlert.MessageType.Success);
@@ -58,12 +61,16 @@ namespace CarRentalSystem.UI
                     AlertUtil.Show(errors, FormAlert.MessageType.Error);
                 }
 
+
             }
-            catch (Exception ex)
+            else
             {
-                AlertUtil.Show(ex.Message, FormAlert.MessageType.Error);
-             
+                AlertUtil.Show(claim.Message, FormAlert.MessageType.Error);
             }
+                
+
+            
+            
            
         }
         private void IsFormNull() 
@@ -91,31 +98,40 @@ namespace CarRentalSystem.UI
 
         private void btnAddCustomer_Click(object sender, EventArgs e)
         {
-            var result = _customerManager.Add(new Customer {Name = txtName.Text, Email = txtMail.Text, IdentityNumber = txtTc.Text, Surname = txtSurname.Text, PhoneNumber = maskedtxtPhoneNumber.Text, Address = txtAddress.Text, State =true });
-            if (result.IsSuccesful)
+            var claim = _roleClaimService.CheckUserRoleClaims("customer.add");
+            if (claim.IsSuccesful) 
             {
-                AlertUtil.Show("Müşteri Eklendi", FormAlert.MessageType.Success);
-                LoadData();
-                _formRental.LoadData();
+                var result = _customerManager.Add(new Customer { Name = txtName.Text, Email = txtMail.Text, IdentityNumber = txtTc.Text, Surname = txtSurname.Text, PhoneNumber = maskedtxtPhoneNumber.Text, Address = txtAddress.Text, State = true });
+                if (result.IsSuccesful)
+                {
+                    AlertUtil.Show("Müşteri Eklendi", FormAlert.MessageType.Success);
+                    LoadData();
+                    _formRental.LoadData();
+                }
+                else
+                {
+                    string errors = "";
+                    foreach (string error in result.Errors)
+                    {
+                        errors += error + "\n";
+                    }
+                    AlertUtil.Show(errors, FormAlert.MessageType.Error);
+
+                }
+
             }
+
             else
             {
-                string errors = "";
-                foreach (string error in result.Errors)
-                {
-                    errors += error + "\n";
-                }
-                AlertUtil.Show(errors, FormAlert.MessageType.Error);
-
+                AlertUtil.Show(claim.Message, FormAlert.MessageType.Error);
             }
-            
         }
 
-       
 
+        Customer selectedCustomer;
         private void sfDgwCustomers_SelectionChanged(object sender, Syncfusion.WinForms.DataGrid.Events.SelectionChangedEventArgs e)
         {
-            var selectedCustomer = (Customer)sfDgwCustomers.CurrentItem;
+            selectedCustomer = (Customer)sfDgwCustomers.CurrentItem;
             txtName.Text = selectedCustomer.Name;
             txtSurname.Text = selectedCustomer.Surname;
             maskedtxtPhoneNumber.Text = selectedCustomer.PhoneNumber;
@@ -127,18 +143,29 @@ namespace CarRentalSystem.UI
 
         private void sfDgwCustomers_CellDoubleClick(object sender, Syncfusion.WinForms.DataGrid.Events.CellClickEventArgs e)
         {
+            
             DialogResult dialogResult = MessageBox.Show("Silmek İstediğinize Emin misiniz ? ", "Araç Silme", MessageBoxButtons.YesNo);
-            var selectedCustomer = (Customer)sfDgwCustomers.CurrentItem;
-
-            if (dialogResult == DialogResult.Yes)
+            var claim = _roleClaimService.CheckUserRoleClaims("customer.delete");
+            if (claim.IsSuccesful)
             {
-                Customer customer = _customerManager.GetCustomerById((int)selectedCustomer.CustomerId).Data;
-                customer.State = false;
-                _customerManager.Update(customer);
-                LoadData();
-                if(_formRental!=null)
-                    _formRental.LoadData();
+                var selectedCustomer = (Customer)sfDgwCustomers.CurrentItem;
+
+                if (dialogResult == DialogResult.Yes)
+                {
+                    Customer customer = _customerManager.GetCustomerById((int)selectedCustomer.CustomerId).Data;
+                    customer.State = false;
+                    _customerManager.Update(customer);
+                    LoadData();
+                    if (_formRental != null)
+                        _formRental.LoadData();
+                }
             }
+            else
+            {
+                AlertUtil.Show(claim.Message, FormAlert.MessageType.Error);
+            }
+
+            
         }
     }
 }

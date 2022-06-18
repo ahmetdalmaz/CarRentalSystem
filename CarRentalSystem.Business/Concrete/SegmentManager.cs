@@ -1,5 +1,7 @@
 ﻿using CarRentalSystem.Business.Abstract;
 using CarRentalSystem.Business.Responses;
+using CarRentalSystem.Business.Utilities;
+using CarRentalSystem.Business.ValidationRules;
 using CarRentalSystem.DataAccess.Abstract;
 using CarRentalSystem.Entities.Concrete;
 using System;
@@ -19,9 +21,16 @@ namespace CarRentalSystem.Business.Concrete
             _segmentDal = segmentDal;
         }
 
-        public void Add(Segment segment)
+        public IResponse Add(Segment segment)
         {
-          _segmentDal.Add(segment);
+            var validationResult = ValidationTool.Validate<SegmentValidator>(segment);
+            if (validationResult.Count > 0)
+            {
+                return Response.Fail("Segment Eklenemedi", validationResult);
+            }
+
+            _segmentDal.Add(segment);
+            return Response.Success();
         }
 
         public void Delete(Segment segment)
@@ -45,9 +54,15 @@ namespace CarRentalSystem.Business.Concrete
             return _segmentDal.GetAll();
         }
 
-        public void Update(Segment segment)
+        public IResponse Update(Segment segment)
         {
+            var validationResult = ValidationTool.Validate<SegmentValidator>(segment);
+            if (validationResult.Count > 0)
+            {
+                return Response.Fail("Segment Güncellenemedi", validationResult);
+            }
             _segmentDal.Update(segment);
+            return Response.Success();
         }
     }
 }

@@ -31,10 +31,10 @@ namespace CarRentalSystem.DataAccess.Mapping
             builder.HasData(new RoleClaim { RoleClaimId = 8, RoleId = 1, Name = "roles.update" });
             builder.HasData(new RoleClaim { RoleClaimId = 9, RoleId = 1, Name = "roles.delete" });
 
-            builder.HasData(new RoleClaim { RoleClaimId = 10, RoleId = 1, Name = "carsettings.view" });
-            builder.HasData(new RoleClaim { RoleClaimId = 11, RoleId = 1, Name = "carsettings.add" });
-            builder.HasData(new RoleClaim { RoleClaimId = 12, RoleId = 1, Name = "carsettings.update" });
-            builder.HasData(new RoleClaim { RoleClaimId = 13, RoleId = 1, Name = "carsettings.delete" });
+            builder.HasData(new RoleClaim { RoleClaimId = 10, RoleId = 1, Name = "settings.view" });
+            builder.HasData(new RoleClaim { RoleClaimId = 11, RoleId = 1, Name = "settings.add" });
+            builder.HasData(new RoleClaim { RoleClaimId = 12, RoleId = 1, Name = "settings.update" });
+            builder.HasData(new RoleClaim { RoleClaimId = 13, RoleId = 1, Name = "settings.delete" });
 
             builder.HasData(new RoleClaim { RoleClaimId = 14, RoleId = 1, Name = "customer.view" });
             builder.HasData(new RoleClaim { RoleClaimId = 15, RoleId = 1, Name = "customer.add" });

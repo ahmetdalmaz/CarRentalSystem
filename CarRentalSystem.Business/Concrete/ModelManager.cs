@@ -1,4 +1,7 @@
 ﻿using CarRentalSystem.Business.Abstract;
+using CarRentalSystem.Business.Responses;
+using CarRentalSystem.Business.Utilities;
+using CarRentalSystem.Business.ValidationRules;
 using CarRentalSystem.DataAccess.Abstract;
 using CarRentalSystem.Entities.Concrete;
 using System;
@@ -18,9 +21,16 @@ namespace CarRentalSystem.Business.Concrete
             _modelDal = modelDal;
         }
 
-        public void Add(Model model)
+        public IResponse Add(Model model)
         {
+            var validationResult = ValidationTool.Validate<ModelValidator>(model);
+
+            if (validationResult.Count > 0)
+            {
+                return Response.Fail("Model Eklenemedi", validationResult);
+            }
             _modelDal.Add(model);
+            return Response.Success();
         }
 
         public void Delete(Model model)
@@ -38,9 +48,16 @@ namespace CarRentalSystem.Business.Concrete
             return await _modelDal.GetListAsync(m=>m.BrandId == brandId);
         }
 
-        public void Update(Model model)
+        public IResponse Update(Model model)
         {
+            var validationResult = ValidationTool.Validate<ModelValidator>(model);
+
+            if (validationResult.Count > 0)
+            {
+                return Response.Fail("Model Güncellenemedi", validationResult);
+            }
             _modelDal.Update(model);
+            return Response.Success();
         }
     }
 }

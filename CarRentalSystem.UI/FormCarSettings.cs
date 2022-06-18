@@ -1,4 +1,6 @@
-﻿using CarRentalSystem.Business.Concrete;
+﻿using CarRentalSystem.Business.Abstract;
+using CarRentalSystem.Business.Concrete;
+using CarRentalSystem.Business.DependencyResolver;
 using CarRentalSystem.DataAccess.Concrete.EntityFramework;
 using System;
 using System.Collections.Generic;
@@ -19,24 +21,71 @@ namespace CarRentalSystem.UI
         {
             InitializeComponent();
             _formCars = formCars;
-
+            _roleClaimService = InstanceFactory.GetInstance<IRoleClaimService>();
         }
+        private IRoleClaimService _roleClaimService;
         BrandManager brandManager = new BrandManager(new EfBrandDal());
         ModelManager modelManager = new ModelManager(new EfModelDal());
         SegmentManager segmentManager = new SegmentManager(new EfSegmentDal());
         
         private void btnAddBrand_Click(object sender, EventArgs e)
         {
-            brandManager.Add(new Entities.Concrete.Brand { BrandName = txtBrandName.Text, State = true});
-            LoadData();
-            _formCars.LoadData();
+            var claim = _roleClaimService.CheckUserRoleClaims("settings.add");
+            if (claim.IsSuccesful)
+            {
+               var result =  brandManager.Add(new Entities.Concrete.Brand { BrandName = txtBrandName.Text, State = true });
+                if (result.IsSuccesful)
+                {
+                    LoadData();
+                    _formCars.LoadData();
+                }
+                else
+                {
+                    string errors = "Lütfen doğru ve eksiksiz şekilde doldurunuz \n";
+                    foreach (var item in result.Errors)
+                    {
+                        errors += item + "\n";
+                    }
+                    AlertUtil.Show(errors, FormAlert.MessageType.Error);
+                }
+                
+            }
+            else
+            {
+                AlertUtil.Show(claim.Message, FormAlert.MessageType.Error);
+            }
+            
         }
 
         private void btnUpdateBrand_Click(object sender, EventArgs e)
         {
-            brandManager.Update(new Entities.Concrete.Brand { BrandId = (int)dataGridBrands.CurrentRow.Cells[0].Value ,BrandName=txtBrandName.Text});
-            LoadData();
-            _formCars.LoadData();
+            var claim = _roleClaimService.CheckUserRoleClaims("settings.update");
+            if (claim.IsSuccesful)
+            {
+                var result =brandManager.Update(new Entities.Concrete.Brand { BrandId = (int)dataGridBrands.CurrentRow.Cells[0].Value, BrandName = txtBrandName.Text });
+                if (result.IsSuccesful)
+                {
+                    LoadData();
+                    _formCars.LoadData();
+
+                }
+                else
+                {
+                    string errors = "Lütfen doğru ve eksiksiz şekilde doldurunuz \n";
+                    foreach (var item in result.Errors)
+                    {
+                        errors += item + "\n";
+                    }
+
+                    AlertUtil.Show(errors, FormAlert.MessageType.Error);
+                }
+                
+            }
+            else
+            {
+                AlertUtil.Show(claim.Message, FormAlert.MessageType.Error);
+            }
+            
         }
 
        
@@ -60,33 +109,135 @@ namespace CarRentalSystem.UI
 
         private void btnAddModel_Click(object sender, EventArgs e)
         {
-            modelManager.Add(new Entities.Concrete.Model { BrandId = (int)cmbBrands.SelectedValue, ModelName = txtModelName.Text });
-            LoadData();
-            _formCars.LoadData();
+            var claim = _roleClaimService.CheckUserRoleClaims("settings.add");
+            if (claim.IsSuccesful)
+            {
+                var result = modelManager.Add(new Entities.Concrete.Model { BrandId = (int)cmbBrands.SelectedValue, ModelName = txtModelName.Text });
+                if (result.IsSuccesful)
+                {
+                    LoadData();
+                    _formCars.LoadData();
+                }
+                else
+                {
+                    string errors = "Lütfen doğru ve eksiksiz şekilde doldurunuz \n";
+                    foreach (var item in result.Errors)
+                    {
+                        errors += item + "\n";
+                    }
+
+                    AlertUtil.Show(errors, FormAlert.MessageType.Error);
+                }
+
+                
+            }
+            else
+            {
+                AlertUtil.Show(claim.Message, FormAlert.MessageType.Error);
+            }
+            
 
         }
 
         private void btnUpdateModel_Click(object sender, EventArgs e)
         {
-            modelManager.Update(new Entities.Concrete.Model { ModelId = (int)dataGridModels.CurrentRow.Cells[0].Value , BrandId = (int)cmbBrands.SelectedValue, ModelName = txtModelName.Text });
-            LoadData();
-            _formCars.LoadData();
+            var claim = _roleClaimService.CheckUserRoleClaims("settings.update");
+            if (claim.IsSuccesful)
+            {
+                var result = modelManager.Update(new Entities.Concrete.Model { ModelId = (int)dataGridModels.CurrentRow.Cells[0].Value, BrandId = (int)cmbBrands.SelectedValue, ModelName = txtModelName.Text });
+                if (result.IsSuccesful)
+                {
+
+                    LoadData();
+                    _formCars.LoadData();
+
+                }
+                else
+                {
+                    string errors = "Lütfen doğru ve eksiksiz şekilde doldurunuz \n";
+                    foreach (var item in result.Errors)
+                    {
+                        errors += item + "\n";
+                    }
+
+                    AlertUtil.Show(errors, FormAlert.MessageType.Error);
+                }
+                
+            }
+            else
+            {
+                AlertUtil.Show(claim.Message, FormAlert.MessageType.Error);
+            }
+
         }
 
         private void btnAddSegment_Click(object sender, EventArgs e)
         {
-            segmentManager.Add(new Entities.Concrete.Segment 
-            {  SegmentName = txtSegmentName.Text, MonthlyPrice = int.Parse(txtMonthlyPrice.Text), DailyPrice = int.Parse(txtDailyPrice.Text), WeeklyPrice = int.Parse(txtWeeklyPrice.Text) });
-            LoadData();
-            _formCars.LoadData();
+            var claim = _roleClaimService.CheckUserRoleClaims("settings.add");
+            if (claim.IsSuccesful)
+            {
+                if (string.IsNullOrEmpty(txtMonthlyPrice.Text) || string.IsNullOrEmpty(txtDailyPrice.Text)|| string.IsNullOrEmpty(txtWeeklyPrice.Text))
+                {
+                    AlertUtil.Show("Geçersiz değer girmeyin ", FormAlert.MessageType.Error);
+                }
+                else
+                {
+                    var result = segmentManager.Add(new Entities.Concrete.Segment
+                    { SegmentName = txtSegmentName.Text, MonthlyPrice = int.Parse(txtMonthlyPrice.Text), DailyPrice = int.Parse(txtDailyPrice.Text), WeeklyPrice = int.Parse(txtWeeklyPrice.Text) });
+                    if (result.IsSuccesful)
+                    {
+                        LoadData();
+                        _formCars.LoadData();
+                    }
+                    else
+                    {
+                        string errors = "Lütfen doğru ve eksiksiz şekilde doldurunuz \n";
+                        foreach (var item in result.Errors)
+                        {
+                            errors += item + "\n";
+                        }
+
+                        AlertUtil.Show(errors, FormAlert.MessageType.Error);
+                    }
+
+                }
+
+            }
+            else
+            {
+                AlertUtil.Show(claim.Message, FormAlert.MessageType.Error);
+            }
         }
 
         private void btnUpdateSegment_Click(object sender, EventArgs e)
         {
-            segmentManager.Update(new Entities.Concrete.Segment
-            { SegmentId = (int)dataGridSegments.CurrentRow.Cells[0].Value, SegmentName = txtSegmentName.Text, MonthlyPrice = int.Parse(txtMonthlyPrice.Text), DailyPrice = int.Parse(txtDailyPrice.Text), WeeklyPrice = int.Parse(txtWeeklyPrice.Text) });
-            LoadData();
-            _formCars.LoadData();
+            var claim = _roleClaimService.CheckUserRoleClaims("settings.update");
+            if (claim.IsSuccesful)
+            {
+                var result = segmentManager.Update(new Entities.Concrete.Segment
+                { SegmentId = (int)dataGridSegments.CurrentRow.Cells[0].Value, SegmentName = txtSegmentName.Text, MonthlyPrice = int.Parse(txtMonthlyPrice.Text), DailyPrice = int.Parse(txtDailyPrice.Text), WeeklyPrice = int.Parse(txtWeeklyPrice.Text) });
+                if (result.IsSuccesful)
+                {
+                    LoadData();
+                    _formCars.LoadData();
+
+                }
+                else
+                {
+                    string errors = "Lütfen doğru ve eksiksiz şekilde doldurunuz \n";
+                    foreach (var item in result.Errors)
+                    {
+                        errors += item + "\n";
+                    }
+                    AlertUtil.Show(errors, FormAlert.MessageType.Error);
+                }
+                
+            }
+            
+            else
+            {
+                AlertUtil.Show(claim.Message, FormAlert.MessageType.Error);
+            }
         }
 
         private void dataGridBrands_CellClick(object sender, DataGridViewCellEventArgs e)
@@ -97,12 +248,22 @@ namespace CarRentalSystem.UI
         private void dataGridBrands_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
         {
             DialogResult dialogResult = MessageBox.Show("Silmek İstediğinize Emin misiniz ? ", "Marka Silme", MessageBoxButtons.YesNo);
-            if (dialogResult == DialogResult.Yes)
+            var claim = _roleClaimService.CheckUserRoleClaims("settings.delete");
+            if (claim.IsSuccesful)
             {
-                brandManager.Delete(new Entities.Concrete.Brand { BrandId = (int)dataGridBrands.CurrentRow.Cells[0].Value });
-                LoadData();
-                _formCars.LoadData();
+                if (dialogResult == DialogResult.Yes)
+                {
+                    brandManager.Delete(new Entities.Concrete.Brand { BrandId = (int)dataGridBrands.CurrentRow.Cells[0].Value });
+                    LoadData();
+                    _formCars.LoadData();
+                }
+
             }
+            else
+            {
+                AlertUtil.Show(claim.Message, FormAlert.MessageType.Error);
+            }
+            
             
         }
 
@@ -115,12 +276,21 @@ namespace CarRentalSystem.UI
         private void dataGridModels_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
         {
             DialogResult dialogResult = MessageBox.Show("Silmek İstediğinize Emin misiniz ? ", "Model Silme", MessageBoxButtons.YesNo);
-            if (dialogResult == DialogResult.Yes)
+            var claim = _roleClaimService.CheckUserRoleClaims("settings.delete");
+            if (claim.IsSuccesful)
             {
-                modelManager.Delete(new Entities.Concrete.Model { ModelId = (int)dataGridModels.CurrentRow.Cells[0].Value });
-                LoadData();
-                _formCars.LoadData();
+                if (dialogResult == DialogResult.Yes)
+                {
+                    modelManager.Delete(new Entities.Concrete.Model { ModelId = (int)dataGridModels.CurrentRow.Cells[0].Value });
+                    LoadData();
+                    _formCars.LoadData();
+                }
             }
+            else
+            {
+                AlertUtil.Show(claim.Message, FormAlert.MessageType.Error);
+            }
+            
         }
 
         private void dataGridSegments_CellClick(object sender, DataGridViewCellEventArgs e)
@@ -134,12 +304,21 @@ namespace CarRentalSystem.UI
         private void dataGridSegments_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
         {
             DialogResult dialogResult = MessageBox.Show("Silmek İstediğinize Emin misiniz ? ", "Segment Silme", MessageBoxButtons.YesNo);
-            if (dialogResult == DialogResult.Yes)
+            var claim = _roleClaimService.CheckUserRoleClaims("settings.delete");
+            if (claim.IsSuccesful)
             {
-                segmentManager.Delete(new Entities.Concrete.Segment { SegmentId = (int)dataGridSegments.CurrentRow.Cells[0].Value });
-                LoadData();
-                _formCars.LoadData();
+                if (dialogResult == DialogResult.Yes)
+                {
+                    segmentManager.Delete(new Entities.Concrete.Segment { SegmentId = (int)dataGridSegments.CurrentRow.Cells[0].Value });
+                    LoadData();
+                    _formCars.LoadData();
+                }
             }
+            else
+            {
+                AlertUtil.Show(claim.Message, FormAlert.MessageType.Error);
+            }
+            
         }
 
        

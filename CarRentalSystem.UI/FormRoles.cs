@@ -3,6 +3,8 @@ using CarRentalSystem.Business.Concrete;
 using CarRentalSystem.Business.DependencyResolver;
 using CarRentalSystem.DataAccess.Concrete.EntityFramework;
 using CarRentalSystem.Entities.Concrete;
+using CarRentalSystem.Entities.Dtos;
+using Syncfusion.Data;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -18,14 +20,6 @@ namespace CarRentalSystem.UI
     public partial class FormRoles : Form
     {
 
-        enum AddingState 
-        {
-            add,
-            update,
-            delete,
-            show
-        }
-
 
         FormUsers _formUsers;
         public FormRoles(FormUsers formUsers)
@@ -40,9 +34,10 @@ namespace CarRentalSystem.UI
         {
             LoadData();
 
+
         }
 
-       
+
 
         private void LoadData() 
         {
@@ -75,7 +70,7 @@ namespace CarRentalSystem.UI
             data.Add("user", "Kullanıcılar");
             data.Add("statistic", "İstatistikler");
             data.Add("rented", "Kiralanan Araçlar");
-            data.Add("carsettings", "Ayarlar");
+            data.Add("settings", "Araç Ayarları");
             data.Add("role", "Yetkiler");
             return data;
         }
@@ -83,7 +78,9 @@ namespace CarRentalSystem.UI
 
         private void btnAddRole_Click(object sender, EventArgs e)
         {
-            operationClaimManager.Add(new Entities.Concrete.Role { Name = txtRoleName.Text });
+
+            var result = operationClaimManager.Add(new Entities.Concrete.Role { Name = txtRoleName.Text });
+
             LoadData();
             _formUsers.LoadData();
             AlertUtil.Show("Rol Eklendi !", FormAlert.MessageType.Success);
@@ -117,17 +114,12 @@ namespace CarRentalSystem.UI
             _formUsers.LoadData();
         }
 
-        public enum PermissionState 
-        {
-            view,
-            add,
-            update,
-            delete
-        }
+      
 
 
         private void btnAddPermission_Click(object sender, EventArgs e)
         {
+            
             List<CheckBox> checkBoxes = new List<CheckBox>();
             List<RoleClaim> roleClaims = new List<RoleClaim>();
             checkBoxes.Add(cmbAdd);
@@ -167,8 +159,207 @@ namespace CarRentalSystem.UI
                 sfDgwPermissions.Columns["ClaimName"].FilterPredicates.Add(new Syncfusion.Data.FilterPredicate { FilterType = Syncfusion.Data.FilterType.StartsWith, FilterValue = (string)cmbDocumentTypes.SelectedValue, FilterBehavior = Syncfusion.Data.FilterBehavior.StringTyped });
 
 
+
             }
 
+        }
+        private void UpdateCheckBox() 
+        {
+            cmbAdd.CheckState = CheckState.Unchecked;
+            cmbRemove.CheckState = CheckState.Unchecked;
+            cmbUpdate.CheckState = CheckState.Unchecked;
+            cmbShow.CheckState = CheckState.Unchecked;
+
+        }
+
+        private void btnUpdatePermission_Click(object sender, EventArgs e)
+        {
+            if (selectedClaims.Count>0)
+            {
+                List<CheckBox> checkBoxes = new List<CheckBox>();
+                List<RoleClaim> roleClaims = new List<RoleClaim>();
+
+                string[] selectedClaimNames = new string[selectedClaims.Count];
+                checkBoxes.Add(cmbAdd);
+                checkBoxes.Add(cmbRemove);
+                checkBoxes.Add(cmbShow);
+                checkBoxes.Add(cmbUpdate);
+                string selectedValue = (string)cmbDocumentTypes.SelectedValue;
+                for (int i = 0; i < selectedClaims.Count; i++)
+                {
+                    selectedClaimNames[i] = selectedClaims[i].ClaimName;
+
+                }
+
+                foreach (var checkBox in checkBoxes)
+                {
+                    if (checkBox == cmbAdd)
+                    {
+                        if (checkBox.Checked)
+                        {
+                            if (!selectedClaimNames.Contains((selectedValue + ".add")))
+                            {
+                                _roleClaimManager.Add(new List<RoleClaim> { new RoleClaim { Name = selectedValue + ".add", RoleId = (int)cmbRoles.SelectedValue } });
+                                LoadData();
+
+                            }
+                        }
+                        else
+                        {
+                            if (selectedClaimNames.Contains((selectedValue + ".add")))
+                            {
+                                int claimId = selectedClaims.Find(x => x.ClaimName == (selectedValue + ".add")).RoleClaimId;
+                                _roleClaimManager.Delete(new List<RoleClaim> { new RoleClaim { RoleClaimId = claimId } });
+                                LoadData();
+
+                            }
+                        }
+                    }
+
+
+                    else if (checkBox == cmbRemove) 
+                    {
+                        if (checkBox.Checked)
+                        {
+                            if (!selectedClaimNames.Contains((selectedValue + ".delete")))
+                            {
+                                _roleClaimManager.Add(new List<RoleClaim> { new RoleClaim { Name = selectedValue + ".delete", RoleId = (int)cmbRoles.SelectedValue } });
+                                LoadData();
+
+                            }
+                        }
+                        else
+                        {
+                            if (selectedClaimNames.Contains((selectedValue + ".delete")))
+                            {
+                                int claimId = selectedClaims.Find(x => x.ClaimName == (selectedValue + ".delete")).RoleClaimId;
+                                _roleClaimManager.Delete(new List<RoleClaim> { new RoleClaim { RoleClaimId = claimId } });
+                                LoadData();
+
+                            }
+                        }
+
+                    }
+                    else if (checkBox == cmbShow) 
+                    {
+                        if (checkBox.Checked)
+                        {
+                            if (!selectedClaimNames.Contains((selectedValue + ".view")))
+                            {
+                                _roleClaimManager.Add(new List<RoleClaim> { new RoleClaim { Name = selectedValue + ".view", RoleId = (int)cmbRoles.SelectedValue } });
+                                LoadData();
+
+                            }
+                        }
+                        else
+                        {
+                            if (selectedClaimNames.Contains((selectedValue + ".view")))
+                            {
+                                int claimId = selectedClaims.Find(x => x.ClaimName == (selectedValue + ".view")).RoleClaimId;
+                                _roleClaimManager.Delete(new List<RoleClaim> { new RoleClaim { RoleClaimId = claimId } });
+                                LoadData();
+
+                            }
+                        }
+                    }
+                    else if (checkBox == cmbUpdate) 
+                    {
+                        if (checkBox.Checked)
+                        {
+                            if (!selectedClaimNames.Contains((selectedValue + ".update")))
+                            {
+                                _roleClaimManager.Add(new List<RoleClaim> { new RoleClaim { Name = selectedValue + ".update", RoleId = (int)cmbRoles.SelectedValue } });
+                                LoadData();
+
+                            }
+                        }
+                        else
+                        {
+                            if (selectedClaimNames.Contains((selectedValue + ".update")))
+                            {
+                                int claimId = selectedClaims.Find(x => x.ClaimName == (selectedValue + ".update")).RoleClaimId;
+                                _roleClaimManager.Delete(new List<RoleClaim> { new RoleClaim { RoleClaimId = claimId } });
+                                LoadData();
+
+                            }
+                        }
+
+                    }
+                }
+                AlertUtil.Show("Yetki Güncellendi", FormAlert.MessageType.Success);
+                selectedClaims.Clear();
+            }
+            else
+            {
+                AlertUtil.Show("Lüften listeden seçim yapın", FormAlert.MessageType.Warning);
+            }
+
+
+
+
+        }
+        List<RoleClaimDto> selectedClaims = new List<RoleClaimDto>();
+        private void sfDgwPermissions_SelectionChanged(object sender, Syncfusion.WinForms.DataGrid.Events.SelectionChangedEventArgs e)
+        {
+            UpdateCheckBox();
+            selectedClaims.Clear();
+            sfDgwPermissions.SelectAll();
+            RecordsList records = sfDgwPermissions.View.Records;
+          
+            foreach (var item in records.GetSource())
+            {
+                RoleClaimDto claim = (RoleClaimDto)item;
+                selectedClaims.Add(claim);
+            }
+            
+
+        
+            if (selectedClaims.Count>0)
+            {
+
+                foreach (var item in selectedClaims)
+                {
+
+                    string[] items = item.ClaimName.Split(".");
+                    string state = items[1];
+                    switch (state)
+                    {
+                        case "add":
+                            cmbAdd.Checked = true;
+                            break;
+                        case "update":
+                            cmbUpdate.Checked = true;
+                            break;
+                        case "delete":
+                            cmbRemove.Checked = true;
+                            break;
+                        case "view":
+                            cmbShow.Checked = true;
+                            break;
+                    }
+
+
+                }
+
+
+                cmbRoles.SelectedIndex = cmbRoles.FindStringExact(selectedClaims[0].RoleName);
+
+            }
+            
+            
+
+
+        }
+
+        private void cmbRoles_SelectedValueChanged(object sender, EventArgs e)
+        {
+            if (sfDgwPermissions.Columns["RoleName"] != null)
+            {
+                sfDgwPermissions.Columns["RoleName"].FilterPredicates.Clear();
+                sfDgwPermissions.Columns["RoleName"].FilterPredicates.Add(new Syncfusion.Data.FilterPredicate { FilterType = Syncfusion.Data.FilterType.StartsWith, FilterValue = ((Role)cmbRoles.SelectedItem).Name, FilterBehavior = Syncfusion.Data.FilterBehavior.StringTyped });
+
+
+            }
         }
     }
 }

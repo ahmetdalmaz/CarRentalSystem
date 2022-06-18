@@ -12,8 +12,8 @@ namespace CarRentalSystem.Business.Abstract
     public interface IRoleClaimService
     {
         IResponse Add(List<RoleClaim> roleClaim);
-        IResponse Update(RoleClaim roleClaim);
-        IResponse Delete(RoleClaim roleClaim);
+        IResponse Update(List<RoleClaim> roleClaims);
+        IResponse Delete(List<RoleClaim> roleClaims);
         IDataResponse<string[]> GetRoleClaimsByRoleId(int roleId);
         IResponse CheckUserRoleClaims(string claim);
         IDataResponse<List<RoleClaimDto>> GetRoleClaims();

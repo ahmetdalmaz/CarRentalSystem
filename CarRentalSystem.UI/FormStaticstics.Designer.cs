@@ -150,9 +150,7 @@
             this.cmbStaticstic.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.cmbStaticstic.FormattingEnabled = true;
             this.cmbStaticstic.Items.AddRange(new object[] {
-            "Toplam Gelir",
-            "Müşteri Sayısı",
-            "Araç Satış Sayısı"});
+            "Toplam Gelir"});
             this.cmbStaticstic.Location = new System.Drawing.Point(762, 180);
             this.cmbStaticstic.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.cmbStaticstic.Name = "cmbStaticstic";

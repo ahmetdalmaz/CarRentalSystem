@@ -42,10 +42,10 @@ namespace CarRentalSystem.UI
             Form? form = null;
             await Task.Run(() =>
             {
-                  
+                try
+                {
                     var result = _userManager.GetAdminUser().Data;
-             
-         
+
                     if (result != null)
                     {
                         FormLogin formLogin = new FormLogin();
@@ -57,6 +57,15 @@ namespace CarRentalSystem.UI
                         FormRegister formRegister = new FormRegister();
                         form = formRegister;
                     }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message);
+                    
+                }
+                    
+             
+         
                 
               
                 

@@ -42,9 +42,14 @@ namespace CarRentalSystem.Business.Concrete
             return Response.Fail(Messages.AuthorizationFailed);
         }
 
-        public IResponse Delete(RoleClaim roleClaim)
+        public IResponse Delete(List<RoleClaim> roleClaims)
         {
-            throw new NotImplementedException();
+            foreach (var item in roleClaims)
+            {
+                _roleClaimDal.Delete(item);
+
+            }
+            return Response.Success();
         }
 
         public IDataResponse<List<RoleClaimDto>> GetRoleClaims()
@@ -57,9 +62,15 @@ namespace CarRentalSystem.Business.Concrete
             return Response<string[]>.Success(_roleClaimDal.GetAll(r => r.RoleId == roleId).Select(r => r.Name).ToArray());
         }
 
-        public IResponse Update(RoleClaim roleClaim)
+        public IResponse Update(List<RoleClaim> roleClaims)
         {
-            throw new NotImplementedException();
+            foreach (var item in roleClaims)
+            {
+                _roleClaimDal.Update(item);
+
+            }
+            return Response.Success();
+
         }
     }
 }
